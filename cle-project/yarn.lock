@@ -976,10 +976,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@ora-io/cle-api@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@ora-io/cle-api/-/cle-api-0.1.1.tgz#9f6816e0a6b50a6fc2316051c9b6af14a65da01f"
-  integrity sha512-bQO4+8Bkcnp+ycepCgXgNpVeO5ZB0GSTCN15P9JUvj1RQTas86P5PjM+mU6CuCdrvqFBZ8i9YKPfrD+vPKhQbQ==
+"@ora-io/cle-api@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@ora-io/cle-api/-/cle-api-0.1.2.tgz#767cc5ffe166f553fbdc25a82cbdb4d8de0ff0af"
+  integrity sha512-FmlKzM6C8u42wL50NbywnN2wlK6FZSgRNw3k3sKgH58ryGcgYrF3O0deZKAPUEL/IxmnsNNBNPFbaDhbYsoasg==
   dependencies:
     "@ethereumjs/rlp" "^5.0.1"
     "@murongg/utils" "^0.1.20"
@@ -993,14 +993,14 @@
     js-yaml "^4.1.0"
     semver "^7.5.4"
     web3-eth-contract "^1.8.2"
-    zkwasm-toolchain "^0.0.6"
+    zkwasm-toolchain "^0.0.7"
 
 "@ora-io/cle-cli@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@ora-io/cle-cli/-/cle-cli-0.1.3.tgz#623a4e7f5ee7f9dcebb02fece5fa870ddea9b16a"
-  integrity sha512-woVU/2k1TJDg1sBHAlkznC0QuVfQOe9kG1DvHCOa7Fjmj1AZrXTGOIen+1V89ORoAupue71tRr2iL7WbBgNmTA==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@ora-io/cle-cli/-/cle-cli-0.1.4.tgz#1efe57f96a0ec817826cd92cceec64e8fdd635ef"
+  integrity sha512-d047CHAvgSj3sk0sD1DV8UQX0tAyNjTyAkvDKgp+SNLoejqHBS9kRf/Oes1PcqMrBIei6LOxWXWbF+Uito5T8Q==
   dependencies:
-    "@ora-io/cle-api" "^0.1.1"
+    "@ora-io/cle-api" "^0.1.2"
     "@ora-io/zkwasm-service-helper" "^1.0.3"
     api "^6.1.1"
     await-to-js "^3.0.0"
@@ -4234,7 +4234,7 @@ yargs@^17.0.1:
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
 
-zkwasm-toolchain@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/zkwasm-toolchain/-/zkwasm-toolchain-0.0.6.tgz#99cb6694b4e328fa18e1fd52f397216e7e8eeeec"
-  integrity sha512-wQy046r6OMqy5aKKGefXIkb5sYsCi7osQ1cnLBcYfctW6Cs6hg3GOSoqabYNUdRDwuHNeX/ZRoq4jw8VqIoWcw==
+zkwasm-toolchain@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/zkwasm-toolchain/-/zkwasm-toolchain-0.0.7.tgz#4b4fdb691da06247558daf244062820da0808385"
+  integrity sha512-BjPdVgyumQSg0hwkCw6QmXrfo0wac0gAlqVG+vQFvX5BudWQ9xEVNfV+NBuotQ9rzUPV4LEBis+5rRfi6U8BvQ==
