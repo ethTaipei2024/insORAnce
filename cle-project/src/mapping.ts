@@ -1,71 +1,23 @@
 //@ts-ignore
 import { require, console } from "@ora-io/cle-lib";
-import { Bytes, Block, Event, BigInt } from "@ora-io/cle-lib";
+import { Bytes, Block, Account, BigInt } from "@ora-io/cle-lib";
 
-var esig_sync = Bytes.fromHexString(
-  "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1",
-);
-var esig_swap = Bytes.fromHexString(
-  "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822",
-);
-
-var token0_decimals = 6;
-var token1_decimals = 18;
-var price_decimals = 3;
-
-var threshold_eth_price = 1880;
-
-var token0_factor = BigInt.from(10).pow(token1_decimals);
-var token1_factor = BigInt.from(10).pow(token0_decimals);
-var price_factor = BigInt.from(10).pow(price_decimals);
-
-function calcPrice(syncEvent: Event): BigInt {
-  const source = changetype<Bytes>(syncEvent.data);
-  const reserve0 = source.slice(0, 32);
-  const reserve1 = source.slice(32, 64);
-
-  const r0 = BigInt.fromBytes(reserve0);
-  const r1 = BigInt.fromBytes(reserve1);
-  let price0 = r0
-    .times(token0_factor)
-    .times(price_factor)
-    .div(r1.times(token1_factor));
-
-  return price0;
-}
+const addr = Bytes.fromHexString('0x9ebEE9820BfC27775D0Ff87dBA8e94B5FD52d9F3')
+const key = Bytes.fromHexString('0x0000000000000000000000000000000000000000000000000000000000000000')
+const threshold = BigInt.fromI32(50)
 
 export function handleBlocks(blocks: Block[]): Bytes {
   console.log("Entering handleBlocks...");
-  let lastSyncEvent: Event | null = null;
+  let account: Account = blocks[0].account(addr);
 
-  let events = blocks[0].events;
+  // check if the slot exists
+  require(account.hasSlot(key) , "No slot found");
 
-  for (let i = events.length - 1; i >= 0; i--) {
-    if (events[i].esig == esig_sync) {
-      //   console.log('SYNC event');
-      lastSyncEvent = events[i];
-      break;
-    }
-  }
-
-  if (lastSyncEvent == null) {
-    // Don't Trigger if there's no event in the block
-    require(false, "Trigger condition failed.");
-    return Bytes.empty(); // Omit compile error, never goes here
-  } else {
-    let price0 = calcPrice(lastSyncEvent);
-
-    // console.log("Current price is: " + (price0.toI64() / 10**price_decimals).toString() + "." + (price0.toI64() % 10**price_decimals).toString())
-
-    // Only Trigger when price > pre-defined threshold
-    let triggerCondition = price0.ge(
-      BigInt.fromI32(threshold_eth_price * 10 ** price_decimals),
-    );
-    // ATTENTION: REMOVE THIS IF YOU WANT TO SEE THE OUTPUT
-    require(triggerCondition, "Trigger condition failed.");
-
-    // Set payload to the current price0 when triggering destination contract.
-    let payload = Bytes.fromHexString(price0.toString(16)).padStart(32, 0);
-    return payload;
-  }
+  let value:Bytes = account.storage(key);
+ 
+  // check if the value is less than the threshold
+  require(BigInt.fromBytes(value)<threshold, "requirement not met");
+  
+  // call aiClaim() on the desitination smart contract
+  return Bytes.fromHexString("2b27b3da").padEnd(32);
 }

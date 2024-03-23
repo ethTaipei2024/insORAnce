@@ -14,7 +14,8 @@
     "deposit": "cle deposit"
   },
   "dependencies": {
-    "@ora-io/cle-lib": "^0.1.1"
+    "@ora-io/cle-lib": "^0.1.1",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@ora-io/cle-cli": "^0.1.3",

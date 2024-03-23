@@ -1,23 +1,23 @@
 specVersion: 0.0.2
 apiVersion: 0.0.2
-name: eg_autoprice
-description: "This demo CLE shows Uniswap price-based zkAutomation case. Calculate ETH/USDC price, set it as the trigger payload whenever price > theshold."
+name: hack_detection
+description: "This CLE detects condition of significant balance drop and trigger claim."
 repository: https://github.com/ora-io/cle
 dataSources:
   - kind: ethereum
     network: sepolia
-    event:
-      - address: '0xa60ecf32309539dd84f27a9563754dca818b815e'
-        events: 
-          - "Sync(uint112,uint112)"
+    storage:
+      - address: "0x9ebEE9820BfC27775D0Ff87dBA8e94B5FD52d9F3"
+        slots:
+          - 0
 
 mapping:
   language: wasm/assemblyscript
   file: ./mapping.ts
   handler: handleBlocks
 
-# Only enable for using zkAutomation
-# dataDestinations:
-#   - kind: ethereum
-#     network: sepolia
-#     address: "0x0000000000000000000000000000000000000001"
+#Only enable for using zkAutomation
+dataDestinations:
+  - kind: ethereum
+    network: sepolia
+    address: "0xc9D7379285FA337D8Cb6586Aa0f3b4957b3F9b54"
