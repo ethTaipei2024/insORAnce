@@ -9,6 +9,7 @@ const termId = BigInt.fromI32(1)
 
 export function handleBlocks(blocks: Block[]): Bytes {
   console.log("Entering handleBlocks...");
+
   let account: Account = blocks[0].account(addr);
 
   // check if the slot exists
@@ -25,7 +26,8 @@ export function handleBlocks(blocks: Block[]): Bytes {
   
   const varTermId = Bytes.fromI32(termId.toI32()).padStart(32, 0);
   const varPercentage = Bytes.fromI32(percentage.toI32()).padStart(32, 0);
+  const varBlockNumber = Bytes.fromI64(blocks[0].number).padStart(32, 0)
   
   // call aiClaim(bytes32, uint256) on the desitination smart contract
-  return Bytes.fromByteArray(Bytes.fromHexString("1349613a").concat(varTermId).concat(varPercentage));
+  return Bytes.fromByteArray(Bytes.fromHexString("1349613a").concat(varTermId).concat(varPercentage).concat(varBlockNumber));
 }
