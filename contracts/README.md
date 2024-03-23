@@ -1,4 +1,9 @@
-## Foundry
+## InsORAnce contract
+
+## DEV note
+- AI Oracle (Sepolia): `0x0A0f4321214BB6C7811dD8a71cF587bdaF03f0A0`
+
+
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
