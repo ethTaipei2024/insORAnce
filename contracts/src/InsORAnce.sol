@@ -38,18 +38,19 @@ contract InsORAnce is AIOracleCallbackReceiver {
     event ClaimInitiated(bytes32 indexed termId, uint256 indexed lossPercentage);
     event ClaimDecisionRecorded(uint256 requestId, bytes32 indexed termId, bool approved, uint256 payoutAmount);
 
+    /* remove for testing round
     modifier onlyZKAutomation() {
         require(msg.sender == zkAutomation, "only zkAutomation");
         _;
-    }
+    }*/
 
     modifier onlyAIOracle() {
         require(msg.sender == address(aiOracle), "Caller is not the AI Oracle");
         _;
     }
 
-    constructor(IAIOracle _aiOracle, address _zkAutomation) AIOracleCallbackReceiver(_aiOracle) {
-        zkAutomation = _zkAutomation;
+    constructor(IAIOracle _aiOracle /*, address _zkAutomation*/ ) AIOracleCallbackReceiver(_aiOracle) {
+        //zkAutomation = _zkAutomation;
     }
 
     function addInsuranceTerms(bytes32 termId, uint256 premium, uint256 coverage, string calldata description)
@@ -95,10 +96,10 @@ contract InsORAnce is AIOracleCallbackReceiver {
         emit WithdrawalAvailable(termId, msg.sender, amountToWithdraw);
     }
 
-    function aiClaim(bytes32 termId, uint256 lossPercentage) external onlyZKAutomation {
-        string memory prompt = insuranceTerms[termId].description;
-        bytes memory input = bytes(prompt);
-        aiOracle.requestCallback(1, input, address(this), AIORACLE_CALLBACK_GAS_LIMIT, bytes32ToBytes(termId));
+    function aiClaim(bytes32 termId, uint256 lossPercentage) external /*onlyZKAutomation*/ {
+        //string memory prompt = insuranceTerms[termId].description;
+        //bytes memory input = bytes(prompt);
+        //aiOracle.requestCallback(1, input, address(this), AIORACLE_CALLBACK_GAS_LIMIT, bytes32ToBytes(termId));
 
         emit ClaimInitiated(termId, lossPercentage);
     }
