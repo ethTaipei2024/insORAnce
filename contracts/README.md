@@ -1,4 +1,10 @@
-## Foundry
+## InsORAnce contract
+
+## DEV note
+- AI Oracle (Sepolia): `0x0A0f4321214BB6C7811dD8a71cF587bdaF03f0A0`
+- Dummy testing smart contract: `0xc9D7379285FA337D8Cb6586Aa0f3b4957b3F9b54`
+- InsORAnce smart contract: `0x9Fe737c0818a64Fc9b60D01bA2f1F8DC63C826Dd`
+- Latest CLE contract : `0xebf8b8c3dfd9bdfe9700a2de90f7c226a7ce8ce5`
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 

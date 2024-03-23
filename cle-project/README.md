@@ -37,7 +37,10 @@ The args provided in the following command are just for reference, please check 
 
 `$ cle publish <ipfs_hash> [bounty_reward_per_trigger]`:
 
-- `$ yarn cle publish QmcqBr71sqyY13eHDy6ZdXi2Yqht95bvgBUsgyNnKG3nvE 0.001`
+- `$ yarn cle publish QmcqBzr71sqyY13eHDy6ZdXi2Yqht95bvgBUsgyNnKG3nvE 0.001`
+
+#### fund the CLE contract
+- `$ yarn cle deposit 0xEbf8B8c3DfD9bdfe9700A2DE90f7c226a7Ce8cE5 0.01` 
 
 ## Usage CLI
 
