@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import {AIOracleCallbackReceiver} from "./AIOracleCallbackReceiver.sol";
 import {IAIOracle} from "./interfaces/IAIOracle.sol";
+import {IPrompt} from "./interfaces/IPrompt.sol";
 import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract InsORAnce is AIOracleCallbackReceiver, Ownable {
@@ -24,6 +25,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
 
     address public zkAutomation;
     uint64 public constant AIORACLE_CALLBACK_GAS_LIMIT = 5000000;
+    IPrompt public promptGenerator;
     mapping(bytes32 => InsuranceTerm) public insuranceTerms;
     mapping(bytes32 => mapping(address => bool)) public insurancePurchased;
     mapping(bytes32 => uint256) public insuredUnits;
@@ -51,7 +53,9 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         _;
     }
 
-    constructor(IAIOracle _aiOracle) AIOracleCallbackReceiver(_aiOracle) Ownable(msg.sender) {}
+    constructor(IAIOracle _aiOracle, IPrompt _prompt) AIOracleCallbackReceiver(_aiOracle) Ownable(msg.sender) {
+        promptGenerator = _prompt;
+    }
 
     function setZKAutomation(address _zkAutomation) external onlyOwner {
         zkAutomation = _zkAutomation;
@@ -106,10 +110,11 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
     }
 
     function aiClaim(bytes32 termId, uint256 lossPercentage, uint256 blockTimestamp) external /*onlyZKAutomation*/ {
-        string memory prompt = insuranceTerms[termId].description;
-        bytes memory input = bytes(prompt);
+        bytes memory prompt = promptGenerator.genPrompt(
+            insuranceTerms[termId].description, insuranceTerms[termId].coverage, lossPercentage, blockTimestamp
+        );
         aiOracle.requestCallback(
-            1, input, address(this), AIORACLE_CALLBACK_GAS_LIMIT, abi.encode(lossPercentage, termId, blockTimestamp)
+            1, prompt, address(this), AIORACLE_CALLBACK_GAS_LIMIT, abi.encode(lossPercentage, termId, blockTimestamp)
         );
 
         emit ClaimInitiated(termId, lossPercentage, blockTimestamp);
