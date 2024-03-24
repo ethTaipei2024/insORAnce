@@ -29,5 +29,5 @@ export function handleBlocks(blocks: Block[]): Bytes {
   const varBlockNumber = Bytes.fromI64(blocks[0].number).padStart(32, 0)
   
   // call aiClaim(bytes32, uint256) on the desitination smart contract
-  return Bytes.fromByteArray(Bytes.fromHexString("1349613a").concat(varTermId).concat(varPercentage).concat(varBlockNumber));
+  return Bytes.fromByteArray(Bytes.fromHexString("1349613a").concat(varTermId).concat(varPercentage));
 }

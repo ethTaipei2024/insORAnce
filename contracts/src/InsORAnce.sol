@@ -48,11 +48,6 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         _;
     }
 
-    modifier onlyAIOracle() {
-        require(msg.sender == address(aiOracle), "Caller is not the AI Oracle");
-        _;
-    }
-
     // _prompt is the address of the IPrompt contract (for prompt generation)
     constructor(IAIOracle _aiOracle, IPrompt _prompt) AIOracleCallbackReceiver(_aiOracle) Ownable(msg.sender) {
         promptGenerator = _prompt;
@@ -112,15 +107,15 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         emit WithdrawalAvailable(termId, msg.sender, amountToWithdraw);
     }
 
-    function aiClaim(bytes32 termId, uint256 lossPercentage, uint256 blockTimestamp) external /*onlyZKAutomation*/ {
+    function aiClaim(bytes32 termId, uint256 lossPercentage) external /*onlyZKAutomation*/ {
         bytes memory prompt = promptGenerator.genPrompt(
-            insuranceTerms[termId].description, insuranceTerms[termId].coverage, lossPercentage, blockTimestamp
+            insuranceTerms[termId].description, insuranceTerms[termId].coverage, lossPercentage, block.timestamp
         );
         aiOracle.requestCallback(
-            1, prompt, address(this), AIORACLE_CALLBACK_GAS_LIMIT, abi.encode(lossPercentage, termId, blockTimestamp)
+            1, prompt, address(this), AIORACLE_CALLBACK_GAS_LIMIT, abi.encode(lossPercentage, termId, block.timestamp)
         );
 
-        emit ClaimInitiated(termId, lossPercentage, blockTimestamp);
+        emit ClaimInitiated(termId, lossPercentage, block.timestamp);
     }
 
     function decompose(string calldata result) internal pure returns (bool, uint256) {
@@ -132,7 +127,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
     function aiOracleCallback(uint256 requestId, bytes calldata output, bytes calldata callbackData)
         external
         override
-        onlyAIOracleCallback
+    /*onlyAIOracleCallback*/
     {
         (uint256 lossPercentage, bytes32 termId, uint256 incidentTimestamp) =
             abi.decode(callbackData, (uint256, bytes32, uint256));
