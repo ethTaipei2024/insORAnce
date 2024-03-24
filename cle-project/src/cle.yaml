@@ -20,4 +20,4 @@ mapping:
 dataDestinations:
   - kind: ethereum
     network: sepolia
-    address: "0x9Fe737c0818a64Fc9b60D01bA2f1F8DC63C826Dd"
+    address: "0x84c5b441596bb3a7f64b7e6b1e47928fccdd82ce"
