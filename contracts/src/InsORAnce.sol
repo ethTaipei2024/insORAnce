@@ -24,7 +24,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
     }
 
     address public zkAutomation;
-    uint64 public constant AIORACLE_CALLBACK_GAS_LIMIT = 5000000;
+    uint64 public constant AIORACLE_CALLBACK_GAS_LIMIT = 5000000; //according to prompt.sol provided by Ora for onchain testing.
     IPrompt public promptGenerator;
     mapping(bytes32 => InsuranceTerm) public insuranceTerms;
     mapping(bytes32 => mapping(address => bool)) public insurancePurchased;
@@ -53,6 +53,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         _;
     }
 
+    // _prompt is the address of the IPrompt contract (for prompt generation)
     constructor(IAIOracle _aiOracle, IPrompt _prompt) AIOracleCallbackReceiver(_aiOracle) Ownable(msg.sender) {
         promptGenerator = _prompt;
     }
@@ -69,6 +70,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         string calldata description
     ) external {
         require(insuranceTerms[termId].coverage == 0, "Term already exists");
+        // a term is shared by multiple users, anyone can buy insurance for a term
         insuranceTerms[termId] = InsuranceTerm({
             premium: premium,
             coverage: coverage,
@@ -84,7 +86,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         InsuranceTerm storage term = insuranceTerms[termId];
         require(msg.value == term.premium, "Incorrect premium amount");
         insurancePurchased[termId][msg.sender] = true;
-        insuredUnits[termId] += 1;
+        insuredUnits[termId] += 1; // how many insuranced has been purchased by users for this term.
         emit InsurancePurchased(msg.sender, termId, period);
     }
 
@@ -98,6 +100,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         emit InsuranceFunded(termId, msg.value, msg.sender, term.fundingLockTime);
     }
 
+    // when terms expired, funders can withdraw their funds from the pool.
     function unfundTerm(bytes32 termId) external {
         require(block.timestamp > insuranceTerms[termId].fundingLockTime, "Funding lock period not yet ended");
         uint256 amountToWithdraw = fundsByFunder[msg.sender][termId];
@@ -121,7 +124,8 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
     }
 
     function decompose(string calldata result) internal pure returns (bool, uint256) {
-        // Decompose the result
+        // Decompose the AI returned result
+        //[??] to-be-finished.
         return (true, 100);
     }
 
@@ -143,7 +147,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         term.requestId = requestId;
 
         require(term.coverage != 0, "Term does not exist");
-        require(block.timestamp <= term.fundingLockTime, "Funding lock period has not ended");
+        require(block.timestamp <= term.fundingLockTime, "Funding lock period has ended");
 
         if (approved) {
             claimPercentage[termId] = percentage;
@@ -153,6 +157,7 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         emit ClaimDecisionRecorded(requestId, termId, approved, percentage);
     }
 
+    // Users can claim their payout after the claim decision done by AI has been finalized.
     function claimPayout(bytes32 termId) external {
         require(insurancePurchased[termId][msg.sender], "User has not purchased insurance for this term");
         require(insuranceClaimed[termId][msg.sender] == false, "User has already claimed insurance for this term");
@@ -167,11 +172,11 @@ contract InsORAnce is AIOracleCallbackReceiver, Ownable {
         if (insuranceTerms[termId].totalFunded < (payout * insuredUnits[termId])) {
             payout = insuranceTerms[termId].totalFunded / insuredUnits[termId];
         }
-        require(insuranceTerms[termId].totalFunded > payout, "No funds available for payout");
         insuranceClaimed[termId][msg.sender] = true;
         pendingWithdrawals[msg.sender] += payout;
     }
 
+    // after a successful claim, users can withdraw their funds (i.e., coverage payout).
     function userWithdraw() external {
         uint256 amount = pendingWithdrawals[msg.sender];
         require(amount > 0, "No funds available for withdrawal");
